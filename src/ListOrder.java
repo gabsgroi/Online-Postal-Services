@@ -11,11 +11,17 @@ public class ListOrder {
 
             ArrayList<Order> anotherlist = new ArrayList<>();
             for (Order p: orderlist) {
-                Order x = new Order(p.getStartdate(),p.getReceiver(),p.getSender(),p.getPacklist(),p.getWithdrawaldate());
+                Order x = new Order(p.getStartdate(),p.getWithdrawaldate(),p.getReceiver(), p.getSender(),p.getPacklist());
                 anotherlist.add(x);
             }
 
             return anotherlist;
         }
 
+    @Override
+    public String toString() {
+        return "ListOrder{" +
+                "orderlist=" + orderlist +
+                '}';
+    }
 }

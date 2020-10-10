@@ -19,4 +19,11 @@ public class User extends Person{
     public void setListorder(ListOrder listorder) {
         this.listorder = listorder;
     }
+
+    @Override
+    public String toString() {
+        return "User{" + super.toString() +
+                "listorder=" + listorder +
+                '}';
+    }
 }

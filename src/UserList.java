@@ -4,10 +4,11 @@ import java.util.Map;
 
 public class UserList {
 
-        private HashMap<String,User> usermap;
+        private HashMap<String,User> usermap = new HashMap<>();
 
         public synchronized void addUser(User p) {
-            usermap.put(p.getUserid(),p);
+            String tmp=p.getUserid();
+            usermap.put(tmp,p);
         }
 
         public HashMap<String,User> getMap(){

@@ -3,15 +3,31 @@ public class Order {
     private String startdate;
     private String withdrawaldate;
     private Receiver receiver;
-    private User sender;
+    private Sender sender;
     private PackList packlist;
 
-    public Order(String startdate, Receiver receiver, User sender, PackList packlist, String withdrawaldate) {
+    public Order(String startdate, String withdrawaldate, Receiver receiver, Sender sender) {
         this.startdate = startdate;
+        this.withdrawaldate = withdrawaldate;
+        this.receiver = receiver;
+        this.sender = sender;
+
+    }
+
+    public Order(String startdate, String withdrawaldate, Receiver receiver, Sender sender, PackList packlist) {        this.startdate = startdate;
+        this.withdrawaldate = withdrawaldate;
         this.receiver = receiver;
         this.sender = sender;
         this.packlist = packlist;
-        this.withdrawaldate=withdrawaldate;
+    }
+
+
+    public String getStartdate() {
+        return startdate;
+    }
+
+    public void setStartdate(String startdate) {
+        this.startdate = startdate;
     }
 
     public String getWithdrawaldate() {
@@ -20,13 +36,6 @@ public class Order {
 
     public void setWithdrawaldate(String withdrawaldate) {
         this.withdrawaldate = withdrawaldate;
-    }
-    public String getStartdate() {
-        return startdate;
-    }
-
-    public void setStartdate(String startdate) {
-        this.startdate = startdate;
     }
 
     public Receiver getReceiver() {
@@ -37,13 +46,6 @@ public class Order {
         this.receiver = receiver;
     }
 
-    public User getSender() {
-        return sender;
-    }
-
-    public void setSender(User sender) {
-        this.sender = sender;
-    }
 
     public PackList getPacklist() {
         return packlist;
@@ -53,6 +55,13 @@ public class Order {
         this.packlist = packlist;
     }
 
+    public Sender getSender() {
+        return sender;
+    }
+
+    public void setSender(Sender sender) {
+        this.sender = sender;
+    }
 
     @Override
     public String toString() {

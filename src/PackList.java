@@ -19,4 +19,10 @@ public class PackList {
             return anotherlist;
         }
 
+    @Override
+    public String toString() {
+        return "PackList{" +
+                "packlist=" + packlist +
+                '}';
+    }
 }

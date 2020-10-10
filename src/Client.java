@@ -46,9 +46,7 @@ public class Client {
                         server.addPerson(x);*/
                         break;
                     case 1:
-                        //ArrayList<Person> mylist = server.getList();
-                        System.out.println("Received list->");
-                       // System.out.println(mylist);
+
                         break;
                     case 2:
                         go = false;
