@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class PackList {
 
-        private ArrayList<Pack> packlist = new ArrayList<>();
+        public ArrayList<Pack> packlist = new ArrayList<>();
 
         public synchronized void addPack(Pack p) {
             packlist.add(p);

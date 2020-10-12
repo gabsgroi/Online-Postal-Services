@@ -7,11 +7,11 @@ public class UserList {
         private HashMap<String,User> usermap = new HashMap<>();
 
         public synchronized void addUser(User p) {
-            String tmp=p.getUserid();
-            usermap.put(tmp,p);
+            usermap.put(p.getUserid(),p);
         }
 
-        public HashMap<String,User> getMap(){
+
+        public synchronized HashMap<String,User> getMap(){
 
             HashMap<String,User> anothermap = new HashMap<>() ;
             for (String key: usermap.keySet()) {
@@ -21,5 +21,8 @@ public class UserList {
 
             return anothermap;
         }
+
+
+
 
 }

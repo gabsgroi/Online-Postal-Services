@@ -1,4 +1,6 @@
-public class User extends Person{
+import java.util.Comparator;
+
+public class User extends Person implements Comparable<User> {
 
     public User(String name, int age, String password, String address, String userid) {
         super(name, age, password, address, userid);
@@ -26,4 +28,13 @@ public class User extends Person{
                 "listorder=" + listorder +
                 '}';
     }
+
+    @Override
+    public int compareTo(User o) {
+        if (this.getUserid().equals(o.getUserid()) && this.getPassword().equals(o.getPassword())){
+            return 1;
+        }
+        return 0;
+    }
 }
+

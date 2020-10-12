@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Server extends UnicastRemoteObject implements Services {
-    UserList user_list= new UserList();
-
+    private UserList user_list= new UserList();
 
     protected Server() throws RemoteException {
     }
@@ -60,6 +59,16 @@ public class Server extends UnicastRemoteObject implements Services {
 
     }
 
+    @Override
+    public User searchUser(String userid, String password) throws RemoteException {
+        for (String key:user_list.getMap().keySet()){
+            if(key.equals(userid) && user_list.getMap().get(key).getPassword().equals(password)){
+                User user_copy = user_list.getMap().get(key);
+                return user_copy;
+            }
+        }return null;
+    }
+
     public static void main(String args[]) {
         try {
             Services services = new Server();
@@ -69,5 +78,7 @@ public class Server extends UnicastRemoteObject implements Services {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
+
     }
 }

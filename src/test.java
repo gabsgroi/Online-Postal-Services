@@ -20,6 +20,7 @@ public class test {
     lista.addUser(d);
 
     System.out.printf(p.toString());
+        System.out.printf(d.toString());
 
 
 }
