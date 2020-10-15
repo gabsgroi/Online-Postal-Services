@@ -55,12 +55,7 @@ import java.io.Serializable;
 
     @Override
     public String toString() {
-        return "Person{" +
-                "userid='" + userid + '\'' +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                ", address='" + address + '\'' +
-                '}';
+        return name +" "+ age+ "yo"+"\n"+address+"\n"+"ID: "+userid+"\n";
     }
 
     public String getPassword() {

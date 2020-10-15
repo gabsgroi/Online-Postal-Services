@@ -1,4 +1,6 @@
-public class Pack {
+import java.io.Serializable;
+
+public class Pack implements Serializable {
     private float lenght;
     private float width;
     private float depth;
@@ -45,11 +47,7 @@ public class Pack {
 
     @Override
     public String toString() {
-        return "pack{" +
-                "lenght=" + lenght +
-                ", width=" + width +
-                ", depth=" + depth +
-                ", weight=" + weight +
-                '}';
+        return "l= " + lenght +" w= " + width +" d= " + depth +" kg= " + weight +" ";
+
     }
 }

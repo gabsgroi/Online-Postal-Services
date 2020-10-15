@@ -1,4 +1,6 @@
-public class Receiver {
+import java.io.Serializable;
+
+public class Receiver implements Serializable {
     private String name;
     private String address;
 
@@ -25,9 +27,6 @@ public class Receiver {
 
     @Override
     public String toString() {
-        return "Receiver{" +
-                "name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+        return name + " Address: " + address;
     }
 }

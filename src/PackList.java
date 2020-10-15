@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PackList {
+public class PackList implements Serializable {
 
         public ArrayList<Pack> packlist = new ArrayList<>();
 
@@ -18,11 +19,29 @@ public class PackList {
 
             return anotherlist;
         }
+        public void removePack(Pack p) {
+
+        packlist.remove(p);
+    }
+        public void removeAllPack() {
+        for(Pack p: packlist){
+            packlist.remove(p);
+        }
+    }
+        public String printList () {
+            String str_packlist="\n";
+            int i=1;
+            for (Pack p: packlist){
+
+                 str_packlist= str_packlist+("Pack "+i+": "+p.toString()+"\n") ;
+                 i++;
+
+            }
+            return  str_packlist;
+        }
 
     @Override
     public String toString() {
-        return "PackList{" +
-                "packlist=" + packlist +
-                '}';
+        return "Pack list: "+this.printList();
     }
 }

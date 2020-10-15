@@ -4,17 +4,15 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Server extends UnicastRemoteObject implements Services {
     private UserList user_list= new UserList();
+    private String staff_code="sgroi20";
+
+
 
     protected Server() throws RemoteException {
-    }
-
-    public void Otherstuff() {
-        // maybe something other is done here....
-        // but it's not part of the interface, so will be not registered
-        // and visible externally...
     }
 
     @Override
@@ -24,43 +22,43 @@ public class Server extends UnicastRemoteObject implements Services {
     }
 
     @Override
-    public String toUP(String s) throws  RemoteException {
-        System.out.println("SERVER LOG: invoked toUP()");
-        return s.toUpperCase();
+    public boolean staffVerify(String staff_code) throws RemoteException{
+        if (this.staff_code.equals(staff_code)) return true;
+        else return false;
     }
-
-    /*@Override
-    public ArrayList<Person> getList() throws RemoteException {
-        System.out.println("LOG SERVER: invoking getList()");
-        return person_list.getList();
-    }*/
-
-    @Override
-    public void addUser(User p) throws RemoteException {
+    public boolean addUser(User p) throws RemoteException {
         System.out.println("LOG SERVER: invoking addUser");
-        user_list.addUser(p);
-    }
-
-    @Override
-    public synchronized void doIntensiveTask() throws RemoteException {
-        System.out.println("Thread that invoked doIntensiveTask: "+Thread.currentThread().getName());
-        System.out.println("doing something....");
-        int i = 0;
-        while (i<100) {
-            System.out.println("completed "+i+"% ");
-            i = i +10;
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        for (String key : user_list.getMap().keySet()) {
+            if (key.equals(p.getUserid())) {
+                return false;
             }
         }
-        System.out.println("COMPLETED!");
+            user_list.addUser(p);
+            return true;
+    }
 
+    @Override
+    public boolean addListOrder(String user_id , ListOrder list_order) throws RemoteException {
+        System.out.println("LOG SERVER: invoking addListOrder");
+        for (String key : user_list.getMap().keySet()) {
+            if (key.equals(user_id)) {
+                ListOrder tmp_server_listorder = new ListOrder();
+                for (Order e: list_order.getOrderlist()){
+                    tmp_server_listorder.addOrder(e);
+                }
+                for (Order e: tmp_server_listorder.getOrderlist()){
+                    user_list.getMap().get(key).getListorder().addOrder(e);
+                }
+                System.out.println("LOG SERVER: addListOrder OK");
+                    return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public User searchUser(String userid, String password) throws RemoteException {
+        System.out.println("LOG SERVER: invoking searchUser");
         for (String key:user_list.getMap().keySet()){
             if(key.equals(userid) && user_list.getMap().get(key).getPassword().equals(password)){
                 User user_copy = user_list.getMap().get(key);
@@ -69,10 +67,16 @@ public class Server extends UnicastRemoteObject implements Services {
         }return null;
     }
 
+    @Override
+    public HashMap<String, User> UserMap() throws RemoteException {
+        System.out.println("LOG SERVER: invoking printUserList");
+        return this.user_list.getMap();
+    }
+
     public static void main(String args[]) {
         try {
             Services services = new Server();
-            Naming.rebind("listserver",services);
+            Naming.rebind("shippingserver",services);
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {

@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class test {
 
     public static void main(String[] args) {
@@ -21,7 +23,8 @@ public class test {
 
     System.out.printf(p.toString());
         System.out.printf(d.toString());
-
+        Scanner user_input = new Scanner(System.in);
+        //user_input.
 
 }
 }
