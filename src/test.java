@@ -1,9 +1,11 @@
+import java.util.Date;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class test {
 
     public static void main(String[] args) {
-        User p= new User("Gabriele",20,"123456","via delle palme","asdone") ;
+       /* User p= new User("Gabriele",20,"123456","via delle palme","asdone") ;
 
     User d= new User("Turi",230,"asdasddd","via delle java","ciaone") ;
     Pack pack1=new Pack(11.3f,22,44.2f,44);
@@ -24,7 +26,15 @@ public class test {
     System.out.printf(p.toString());
         System.out.printf(d.toString());
         Scanner user_input = new Scanner(System.in);
-        //user_input.
+        //user_input.*/
+UUID turi = UUID.randomUUID();
+        System.out.println(turi);
+        Scanner jojo= new Scanner(System.in);
+        String id=jojo.nextLine();
+        UUID idcod=UUID.fromString(id);
+        System.out.println(turi.compareTo(idcod));
+        Date a = new Date();
+        //  System.out.println(order_id+"\n"+order_id1+"\n"+order_id2+"\n"+order_id3+"\n"+order_id4+"\n");
 
 }
 }

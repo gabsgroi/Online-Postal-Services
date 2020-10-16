@@ -1,7 +1,6 @@
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
 public class UserList implements Serializable {
 
@@ -10,9 +9,27 @@ public class UserList implements Serializable {
         public synchronized void addUser(User p) {
             usermap.put(p.getUserid(),p);
         }
+        public synchronized boolean addOrder(Order o, String userid) {
+        for (String key: usermap.keySet()) {
+            System.out.println("sono dentro il for di addOrder(order,string)");
+            if (key.equals(userid)){
+                System.out.println("faccio il confronto con la chiave");
+                if(usermap.get(key).getListorder().addOrder(o)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public synchronized boolean removeOrder(Order o){
+        for (String key: usermap.keySet()) {
 
+                return usermap.get(key).getListorder().removeOrder(o);
+        }
+        return false;
+    }
 
-        public synchronized HashMap<String,User> getMap(){
+    public synchronized HashMap<String,User> getMap(){
 
             HashMap<String,User> anothermap = new HashMap<>() ;
             for (String key: usermap.keySet()) {
@@ -24,6 +41,10 @@ public class UserList implements Serializable {
         }
 
 
-
-
+    @Override
+    public String toString() {
+        return "UserList{" +
+                "usermap=" + usermap +
+                '}';
+    }
 }

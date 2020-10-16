@@ -4,13 +4,17 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Client {
     public static void main(String args[]) {
-        // usual stuff here... menu, etc...
 
-        String address = args[0];
-        String rmi_name = args[1];
+        // SISTEMAREEEEEE
+        // SI POTEVA USARE CLONABLE
+       /* String address = args[0];
+        String rmi_name = args[1];*/
+        String address = "127.0.0.1";
+        String rmi_name = "shippingserver";
 
         try {
             Services server = (Services) Naming.lookup("rmi://"+address+"/"+rmi_name);
@@ -89,7 +93,16 @@ public class Client {
                                         break;
                                     case 1:
                                         tmp_user=server.searchUser(tmp_user.getUserid(),tmp_user.getPassword());
-                                        System.out.println(tmp_user.getListorder().toString());
+                                        if (tmp_user.getListorder()==null){
+                                            System.out.println("You don't have any order");
+                                        }
+                                        else{
+                                            System.out.println(tmp_user.getName()+", your actual orders: ");
+                                            String tmp_string = tmp_user.getListorder().toString();
+                                            tmp_string= tmp_string.substring(1,tmp_string.length()-1).replace(',',' ');
+                                            System.out.println(tmp_string);
+                                        }
+
                                         break;
                                     case 2:
 
@@ -153,15 +166,21 @@ public class Client {
                                 System.out.println(" 3 - Log Out");
                                 System.out.println("--------------------------------");
                                 choice1= user_input.nextInt();
+                                user_input.nextLine();
                                 switch (choice1){
                                     case 0:
-
-                                        for(String key: server.UserMap().keySet()){
-                                            System.out.println(server.UserMap().get(key).getListorder());
-                                        }
+                                        System.out.println(server.courierListOrder());
                                         break;
 
                                     case 1:
+                                        System.out.println("Insert the ID of the Order that you are going to consume: ");
+                                        UUID tmp_uuid= UUID.fromString(user_input.nextLine());
+
+                                        for (Order o: server.courierListOrder().getOrderlist()){
+                                            if (o.getOrder_id().compareTo(tmp_uuid)==0) {
+                                                server.removeOrder(o);
+                                            }
+                                        }
                                         break;
 
                                     case 2:
