@@ -1,8 +1,10 @@
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.UUID;
 
-public class Order implements Serializable, Comparable<Order> {
+public class Order implements Serializable, Comparable<Order>,Comparator<Order> {
 
     public UUID getOrder_id() {
         return order_id;
@@ -13,14 +15,14 @@ public class Order implements Serializable, Comparable<Order> {
     }
 
     private UUID order_id;
-    private String startdate;
+    private Long startdate;
     private String status;
     private Receiver receiver;
     private Sender sender;
     private PackList packlist;
 
 
-    public Order(String startdate,Receiver receiver, Sender sender) {
+    public Order(Long startdate,Receiver receiver, Sender sender) {
 
         this.order_id=UUID.randomUUID();
         this.startdate = startdate;
@@ -30,7 +32,7 @@ public class Order implements Serializable, Comparable<Order> {
 
     }
 
-    public Order( String startdate, Receiver receiver, Sender sender, PackList packlist) {
+    public Order( Long startdate, Receiver receiver, Sender sender, PackList packlist) {
         this.order_id=UUID.randomUUID();;
         this.startdate = startdate;
         this.status = "In elaboration";
@@ -38,7 +40,7 @@ public class Order implements Serializable, Comparable<Order> {
         this.sender = sender;
         this.packlist = packlist;
     }
-    public Order(UUID order_id,String startdate,String status, Receiver receiver, Sender sender, PackList packlist) {
+    public Order(UUID order_id,Long startdate,String status, Receiver receiver, Sender sender, PackList packlist) {
         this.order_id=order_id;
         this.startdate = startdate;
         this.status = status;
@@ -47,11 +49,11 @@ public class Order implements Serializable, Comparable<Order> {
         this.packlist = packlist;
     }
 
-    public String getStartdate() {
+    public Long getStartdate() {
         return startdate;
     }
 
-    public void setStartdate(String startdate) {
+    public void setStartdate(Long startdate) {
         this.startdate = startdate;
     }
 
@@ -90,7 +92,9 @@ public class Order implements Serializable, Comparable<Order> {
 
     @Override
     public String toString() {
-        return "\n"+"Order ID: "+order_id +'\n'+ "Stardate: "+startdate  +"\n"+"Status: "+status+ "\n"+"Sender: "+sender+"\n"+"Receiver: "+receiver+"\n"+packlist;
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy HH mm");
+        Date resultdate = new Date(startdate);
+        return '\n'+"Order ID: "+order_id +'\n'+ "Stardate: "+resultdate  +"\n"+"Status: "+status+ "\n"+"Sender: "+sender+"\n"+"Receiver: "+receiver+"\n"+packlist;
 
     }
 
@@ -100,5 +104,16 @@ public class Order implements Serializable, Comparable<Order> {
             return 1;
         }
         return 0;
+    }
+
+    @Override
+    public int compare(Order o1, Order o2) {
+        if (o1.getStartdate().compareTo(o2.startdate) == 0) {
+            return 0;
+        }
+        else if ((o1.getStartdate().compareTo(o2.startdate) <0)){
+            return -1;
+        }
+        return 1;
     }
 }

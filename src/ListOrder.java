@@ -10,6 +10,7 @@ public class ListOrder implements Serializable {
         if (orderlist.isEmpty()){
             orderlist.add(p);
             return true;
+
         }
         for (Order o: orderlist){
             if (o.compareTo(p)==0){
