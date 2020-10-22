@@ -1,0 +1,3 @@
+asd;75f75af9-170e-4b9c-8712-5e7f1d1b5ef6;1603228401028;In elaboration;alfio;via dddddd;gabriele;via gala;2;11.0;22.0;5.0;4.0;1.0;6.0;4.0;7.0;
+asd;b5838792-219e-4475-b61c-46cd3f4aa148;1603228621652;In elaboration;deianira;via priolo;gabriele;via gala;1;15.0;18.0;10.0;70.0;
+ok;f3311870-867b-4dee-925f-cf59bfc4285f;1603228687868;In elaboration;gio;via dei paesi;Angelo;via noto;3;11.0;22.0;33.0;44.0;1.0;4.0;78.0;4.0;65.0;22.0;1.0;0.0;

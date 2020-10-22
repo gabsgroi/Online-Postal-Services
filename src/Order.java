@@ -1,10 +1,9 @@
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.UUID;
 
-public class Order implements Serializable, Comparable<Order>,Comparator<Order> {
+public class Order implements Serializable, Comparable<Order> {
 
     public UUID getOrder_id() {
         return order_id;
@@ -106,14 +105,4 @@ public class Order implements Serializable, Comparable<Order>,Comparator<Order> 
         return 0;
     }
 
-    @Override
-    public int compare(Order o1, Order o2) {
-        if (o1.getStartdate().compareTo(o2.startdate) == 0) {
-            return 0;
-        }
-        else if ((o1.getStartdate().compareTo(o2.startdate) <0)){
-            return -1;
-        }
-        return 1;
-    }
 }

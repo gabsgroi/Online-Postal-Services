@@ -1,45 +1,37 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ListOrder implements Serializable {
         private ArrayList<Order> orderlist = new ArrayList<>();
 
 
     public synchronized boolean addOrder(Order p) {
-        int i=0;
-        if (orderlist.isEmpty()){
+        int i = 0;
+        if (orderlist.isEmpty()) {
             orderlist.add(p);
             return true;
 
         }
-        for (Order o: orderlist){
-            if (o.compareTo(p)==0){
+        for (Order o : orderlist) {
+            if (o.compareTo(p) == 0) {
                 i++;
             }
         }
-        if (i==orderlist.size()){
+        if (i == orderlist.size()) {
             orderlist.add(p);
             return true;
         }
         return false;
     }
-    public synchronized boolean removeOrder(Order p) {
-        if (orderlist.isEmpty()){
-            System.out.println("There are not orders");
-            return false;
-        }
+
+    public synchronized boolean removeOrder(UUID uuid) {
         for (Order o: orderlist){
-            if (o.compareTo(p)==1){
-                if(orderlist.remove(o)){
-                    System.out.println("rimosso");
-                }
-                System.out.println("Order "+p.getOrder_id()+" succeffully removed");
-                return true;
+            if (o.getOrder_id().equals(uuid)){
+                return orderlist.remove(o);
             }
         }
-        System.out.println("The order that you want to consume does not exist");
-        return false;
-
+return  false;
     }
     public void removeAllOrder() {
         for(Order o: orderlist){

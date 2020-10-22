@@ -8,9 +8,42 @@ public class test {
 
     public static void main(String[] args) throws IOException {
 
-        ListOrder listorder=readFile();
-        FileWriter writer= new FileWriter("ciaone.txt",true); //mettere append true
-        PrintWriter pw=new PrintWriter(writer);
+        FileReader reader = new FileReader("users.txt");
+        Scanner in = new Scanner(reader);
+        UserList tmp_userlist = new UserList();
+        ListOrder tmp_order = readFile();
+        ListOrder tmp_userlistorder=new ListOrder();
+        while (in.hasNext()) {
+            String line = in.nextLine();
+            String[] vectorline = line.split(";");
+            String tmp_name = vectorline[0];
+            String tmp_address = vectorline[1];
+            int tmp_age = Integer.parseInt(vectorline[2]);
+            String tmp_userid = vectorline[3];
+            String tmp_password = vectorline[4];
+            int index = Integer.parseInt(vectorline[5]);
+            ArrayList<String> vector_orderid=new ArrayList<>();
+            for(int i=0;i<index;i++){
+                vector_orderid.add(vectorline[6+i]);
+            }
+
+            for(int i=0;i<index;i++){
+                for (Order o: tmp_order.getOrderlist()){
+                    if(UUID.fromString(vector_orderid.get(i)).equals(tmp_order.getOrderlist().get(i).getOrder_id())){
+                }
+                    tmp_userlistorder.addOrder(o);
+                }
+            }
+            User u=new User(tmp_name,tmp_age,tmp_password,tmp_address,tmp_userid,tmp_userlistorder);
+            tmp_userlist.addUser(u);
+        }
+        System.out.println(tmp_userlist);
+    }
+
+
+    public synchronized static void writeFile(ListOrder listorder) throws IOException {
+        FileWriter writer= new FileWriter("ciaone.txt"); //mettere append true
+        PrintWriter pw= new PrintWriter(writer);
         for(Order o:listorder.getOrderlist()){
             pw.print(o.getOrder_id());
             pw.print(";");
@@ -42,6 +75,7 @@ public class test {
             pw.print('\n');
         }
     }
+
     public synchronized static ListOrder readFile() throws IOException {
         FileReader reader =new FileReader("ciao.txt");
         Scanner in=new Scanner(reader);

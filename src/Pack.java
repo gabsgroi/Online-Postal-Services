@@ -47,7 +47,6 @@ public class Pack implements Serializable {
 
     @Override
     public String toString() {
-        return "l= " + lenght +" w= " + width +" d= " + depth +" kg= " + weight +" ";
-
+        return "L: " + lenght +" cm"+" W: " + width +" cm"+" D= " + depth+" cm"+" W= " + weight +" kg ";
     }
 }

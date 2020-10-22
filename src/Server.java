@@ -4,58 +4,87 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-
-// devo modificare il menu', sistemare l'ordine con un order id e fare un metodo che elimina l'ordine.
+//togliere il metodo SCRIVI
+//guardare i return
+// i metodi di Services sono già sincronizzati?
+// devo modificare il menu',.
 public class Server extends UnicastRemoteObject implements Services {
 
-    private UserList user_list= new UserList();
-    private ListOrder util_list;
+    private UserList user_list; //=new UserList();
+
     {
         try {
-            util_list = readFile();
+            user_list = readUser();
+            readFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    User asd=new User("asd",33,"asd","asd","asd");
 
 
+    private ListOrder util_list=new ListOrder();
+    /*{
+        try {
+
+            util_list = readFile();
+            user_list=readUser();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+*/
     private String staff_code="sgroi20";
 
     protected Server() throws RemoteException {}
 
     private void listOrderCopy(){
-        System.out.println("SERVER LOG: invoked listOrderCopy");
+        System.out.println("SERVER LOG: invoking listOrderCopy");
         for (String key : user_list.getMap().keySet()) {
             for (Order o: user_list.getMap().get(key).getListorder().getOrderlist()){
                 util_list.addOrder(o);
             }
         }
+        System.out.println("SERVER LOG: invoked listOrderCopy");
     }
 
     public ListOrder courierListOrder () throws RemoteException {
         this.listOrderCopy();
+        /*try {
+            writeFile(util_list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
         return this.util_list;
     }
 
     @Override
-    public boolean removeOrder(Order o) throws RemoteException {
-        System.out.println("SERVER LOG: invoked removeOrder()");
-        for (String key : user_list.getMap().keySet()) {
-            util_list.removeOrder(o);
-            user_list.removeOrder(o);
-            return true;
-            }
-        return false;
+    public boolean removeOrder(UUID uuid) throws RemoteException {
+        System.out.println("SERVER LOG: invoking removeOrder()");
+        user_list.removeOrder(uuid);
+        util_list.removeOrder(uuid);
+
+
+
+            System.out.println("SERVER LOG: invoked removeOrder()");
+//sistemare return
+        return true;
         }
 
+    @Override
+    public void SCRIVI() throws RemoteException {
+        try {
+            writeFile();
+            writeUserlist(user_list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     @Override
     public Long getDate() throws RemoteException {
-        System.out.println("SERVER LOG: invoked getDate()");
+        System.out.println("SERVER LOG: invoking getDate()");
         Long date=System.currentTimeMillis();
-        user_list.addUser(asd);
         return date;
     }
 
@@ -72,8 +101,16 @@ public class Server extends UnicastRemoteObject implements Services {
             }
         }
             user_list.addUser(p);
+        try {
+            writeUserlist(user_list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("SERVER LOG: invoked addUser");
             return true;
     }
+
+
 
     @Override
     public boolean addListOrder(String user_id , ListOrder list_order) throws RemoteException {
@@ -86,8 +123,8 @@ public class Server extends UnicastRemoteObject implements Services {
                 }
                 for (Order e: tmp_server_listorder.getOrderlist()){
                     if (user_list.addOrder(e,user_id)){
-                        System.out.println("SERVER LOG: addListOrder OK");
-                        System.out.println(user_list);
+                        System.out.println("SERVER LOG: invoked addListOrder");
+
                         return true;
                     }
                 }
@@ -98,10 +135,11 @@ public class Server extends UnicastRemoteObject implements Services {
 
     @Override
     public User searchUser(String userid, String password) throws RemoteException {
-        System.out.println("LOG SERVER: invoking searchUser");
+        System.out.println("SERVER LOG: invoking searchUser");
         for (String key:user_list.getMap().keySet()){
             if(key.equals(userid) && user_list.getMap().get(key).getPassword().equals(password)){
                 User user_copy = user_list.getMap().get(key);
+                System.out.println("SERVER LOG: invoked searchUser");
                 return user_copy;
             }
         }return null;
@@ -120,72 +158,119 @@ public class Server extends UnicastRemoteObject implements Services {
         }
 
     }
-    public synchronized static ListOrder readFile() throws IOException {
-            FileReader reader =new FileReader("ciao.txt");
-            Scanner in=new Scanner(reader);
-            ListOrder tmp_order=new ListOrder();
-            while(in.hasNext()){
-                String line=in.nextLine();
-                String [] vectorline=line.split(";");
-                String tmp_id=vectorline[0];
-                Long tmp_date=Long.parseLong(vectorline[1]);
-                String tmp_status=vectorline[2];
-                String tmp_receivername=vectorline[3];
-                String tmp_receiveraddress=vectorline[4];
-                String tmp_sendername=vectorline[5];
-                String tmp_senderaddress=vectorline[6];
-                Integer index =Integer.parseInt(vectorline[7]);
-                PackList tmp_packlist=new PackList();
-                ArrayList <Float> tmp_pack = new ArrayList<>();
-                ArrayList<Pack> packlist=new ArrayList<>();
-                for (int i=1;i<=index*4;i++) {
-                    tmp_pack.add(Float.parseFloat(vectorline[7+i]));
-                    if (i%4==0){
-                        Pack p=new Pack(tmp_pack.get(i-4),tmp_pack.get(i-3),tmp_pack.get(i-2),tmp_pack.get(i-1));
-                        tmp_packlist.addPack(p);
-                    }
+
+    public synchronized void writeUserlist(UserList user_list) throws IOException {
+        FileWriter writer= new FileWriter("users.txt");
+        PrintWriter pw= new PrintWriter(writer);
+        for(String key : user_list.getMap().keySet()){
+            pw.print(user_list.getMap().get(key).getName());
+            pw.print(";");
+            pw.print(user_list.getMap().get(key).getAddress());
+            pw.print(";");
+            pw.print(user_list.getMap().get(key).getAge());
+            pw.print(";");
+            pw.print(user_list.getMap().get(key).getUserid());
+            pw.print(";");
+            pw.print(user_list.getMap().get(key).getPassword());
+            pw.print(";");
+            pw.print('\n');
+            pw.flush();
+        }
+        writer.close();
+    }
+    public synchronized UserList readUser () throws IOException {
+
+        FileReader reader = new FileReader("users.txt");
+        Scanner in = new Scanner(reader);
+        UserList tmp_userlist = new UserList();
+
+        while (in.hasNext()) {
+            String line = in.nextLine();
+            String[] vectorline = line.split(";");
+            String tmp_name = vectorline[0];
+            String tmp_address = vectorline[1];
+            int tmp_age = Integer.parseInt(vectorline[2]);
+            String tmp_userid = vectorline[3];
+            String tmp_password = vectorline[4];
+
+            ArrayList<String> vector_orderid=new ArrayList<>();
+            User u = new User (tmp_name,tmp_age,tmp_password,tmp_address,tmp_userid);
+            tmp_userlist.addUser(u);
+        }
+        reader.close();
+        return tmp_userlist;
+    }
+    public synchronized void readFile() throws IOException {
+
+        FileReader reader =new FileReader("listorder.txt");
+        Scanner in=new Scanner(reader);
+        while(in.hasNext()){
+            String line=in.nextLine();
+            String [] vectorline=line.split(";");
+            String tmp_userid=vectorline[0];
+            String tmp_id=vectorline[1];
+            Long tmp_date=Long.parseLong(vectorline[2]);
+            String tmp_status=vectorline[3];
+            String tmp_receivername=vectorline[4];
+            String tmp_receiveraddress=vectorline[5];
+            String tmp_sendername=vectorline[6];
+            String tmp_senderaddress=vectorline[7];
+            int index =Integer.parseInt(vectorline[8]);
+            PackList tmp_packlist=new PackList();
+            ArrayList <Float> tmp_pack = new ArrayList<>();
+            for (int i=1;i<=index*4;i++) {
+                tmp_pack.add(Float.parseFloat(vectorline[8+i]));
+                if (i%4==0){
+                    Pack p=new Pack(tmp_pack.get(i-4),tmp_pack.get(i-3),tmp_pack.get(i-2),tmp_pack.get(i-1));
+                    tmp_packlist.addPack(p);
                 }
-                Receiver tmp_receiver=new Receiver(tmp_receivername,tmp_receiveraddress);
-                Sender tmp_sender=new Sender(tmp_sendername,tmp_senderaddress);
-                Order o = new Order(UUID.fromString(tmp_id),tmp_date,tmp_status,tmp_receiver,tmp_sender,tmp_packlist);
-                tmp_order.addOrder(o);
             }
-            reader.close();
-            return tmp_order;
+            Receiver tmp_receiver=new Receiver(tmp_receivername,tmp_receiveraddress);
+            Sender tmp_sender=new Sender(tmp_sendername,tmp_senderaddress);
+            Order o = new Order(UUID.fromString(tmp_id),tmp_date,tmp_status,tmp_receiver,tmp_sender,tmp_packlist);
+            this.user_list.addOrder(o,tmp_userid);
+
+        }
+        reader.close();
+    }
+    public synchronized void writeFile() throws IOException {
+        FileWriter writer= new FileWriter("listorder.txt");
+        PrintWriter pw= new PrintWriter(writer);
+        for (String key: user_list.getMap().keySet()){
+            for(Order o:user_list.getMap().get(key).getListorder().getOrderlist()){
+                pw.print(key);
+                pw.print(";");
+                pw.print(o.getOrder_id());
+                pw.print(";");
+                pw.print(o.getStartdate());
+                pw.print(";");
+                pw.print(o.getStatus());
+                pw.print(";");
+                pw.print(o.getReceiver().getName());
+                pw.print(";");
+                pw.print(o.getReceiver().getAddress());
+                pw.print(";");
+                pw.print(o.getSender().getName());
+                pw.print(";");
+                pw.print(o.getSender().getAddress());
+                pw.print(";");
+                pw.print(o.getPacklist().getPacklist().size());
+                pw.print(";");
+                for (Pack p : o.getPacklist().getPacklist()){
+                    pw.print(p.getLenght());
+                    pw.print(";");
+                    pw.print(p.getWidth());
+                    pw.print(";");
+                    pw.print(p.getDepth());
+                    pw.print(";");
+                    pw.print(p.getWeight());
+                    pw.print(";");
+                }
+                pw.print('\n');
+                pw.flush();
+            }
+        }
+
     }
 
-    public synchronized static void writeFile(ListOrder listorder) throws IOException {
-        FileWriter writer= new FileWriter("ciaone.txt"); //mettere append true
-        PrintWriter pw=new PrintWriter(writer);
-        for(Order o:listorder.getOrderlist()){
-            pw.print(o.getOrder_id());
-            pw.print(";");
-            pw.print(o.getStartdate());
-            pw.print(";");
-            pw.print(o.getStatus());
-            pw.print(";");
-            pw.print(o.getReceiver().getName());
-            pw.print(";");
-            pw.print(o.getReceiver().getAddress());
-            pw.print(";");
-            pw.print(o.getSender().getName());
-            pw.print(";");
-            pw.print(o.getSender().getAddress());
-            pw.print(";");
-            pw.print(o.getPacklist().getPacklist().size());
-            pw.print(";");
-            for (Pack p : o.getPacklist().getPacklist()){
-                pw.print(p.getLenght());
-                pw.print(";");
-                pw.print(p.getWidth());
-                pw.print(";");
-                pw.print(p.getDepth());
-                pw.print(";");
-                pw.print(p.getWeight());
-                pw.print(";");
-            }
-            pw.flush();
-            pw.print('\n');
-        }
-    }
 }

@@ -1,5 +1,3 @@
-import java.util.Comparator;
-
 public class User extends Person implements Comparable<User> {
     ListOrder listorder;
     public User(String name, int age, String password, String address, String userid) {

@@ -3,7 +3,6 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.UUID;
@@ -24,14 +23,12 @@ public class Client {
             System.out.println( "Welcome to Sgroi's online shipping service");
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy HH mm");
             Date resultdate = new Date(server.getDate());
-            System.out.println(resultdate);
             System.out.println('\n');
+            System.out.println(resultdate);
             ListOrder tmp_listorder = new ListOrder();
             PackList tmp_packlist=new PackList();
             boolean go = true;
             Scanner user_input = new Scanner(System.in);
-            Scanner user_input2 = new Scanner(System.in);
-            Scanner user_input3 = new Scanner(System.in);
             while (go) {
                 System.out.println("--------------------------------");
                 System.out.println(" 0 - Login");
@@ -57,7 +54,9 @@ public class Client {
                             while (menu){
                                 System.out.println('\n');
                                 System.out.println("--------------------------------");
+                                System.out.println('\n');
                                 System.out.println(" Hello "+tmp_user.getName());
+                                System.out.println('\n');
                                 System.out.println(" 0 - Insert new order");
                                 System.out.println(" 1 - Watch your active orders");
                                 System.out.println(" 2 -   ");
@@ -93,7 +92,7 @@ public class Client {
 
 
                                         if(server.addListOrder(tmp_user.getUserid(), tmp_user.getListorder())){
-                                            System.out.println(" Order correctly added!\n");
+                                            System.out.println(" Order correctly added!");
                                         }
                                         tmp_listorder=new ListOrder();
                                         tmp_packlist=new PackList();
@@ -178,20 +177,30 @@ public class Client {
                                 user_input.nextLine();
                                 switch (choice1){
                                     case 0:
-                                        System.out.println(server.courierListOrder());
+                                        int i=1;
+                                        for (Order o:server.courierListOrder().getOrderlist()){
+
+                                            System.out.println(i+")"+o.toString());
+                                            i++;
+                                        }
+
                                         break;
 
                                     case 1:
-                                        System.out.println("Insert the ID of the Order that you are going to consume: ");
-                                        UUID tmp_uuid= UUID.fromString(user_input.nextLine());
 
-                                        for (Order o: server.courierListOrder().getOrderlist()){
-                                            if (o.getOrder_id().compareTo(tmp_uuid)==0) {
-                                                server.removeOrder(o);
-                                            }
+                                        System.out.println("Insert the order's number that you want to deliver ");
+                                        //UUID tmp_uuid= UUID.fromString(user_input.nextLine());
+                                        int index=user_input.nextInt();
+                                        user_input.nextLine();
+                                        UUID tmp_uuid=server.courierListOrder().getOrderlist().get(index-1).getOrder_id();
+                                        server.removeOrder(tmp_uuid);
+                                        int j=1;
+                                        for (Order o:server.courierListOrder().getOrderlist()){
+
+                                            System.out.println(j+")"+o.toString());
+                                            j++;
                                         }
                                         break;
-
                                     case 2:
                                         break;
 
@@ -214,7 +223,10 @@ public class Client {
                         go = false;
                         System.out.println("Quitting client");
                         break;
-
+                    case 4:
+                        server.SCRIVI();
+                        System.out.println("scrivi");
+                        break;
                 }
             }
         } catch (NotBoundException e) {

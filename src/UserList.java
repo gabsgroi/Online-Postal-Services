@@ -21,11 +21,11 @@ public class UserList implements Serializable {
         }
         return false;
     }
-    public synchronized boolean removeOrder(Order o){
+    public synchronized boolean removeOrder(UUID uuid){
         for (String key: usermap.keySet()) {
+            usermap.get(key).getListorder().removeOrder(uuid);
 
-                return usermap.get(key).getListorder().removeOrder(o);
-        }
+        }//sistemare return
         return false;
     }
 
