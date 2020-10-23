@@ -10,5 +10,4 @@ public interface Services extends Remote {
     public User searchUser(String userid,String  password) throws RemoteException;
     public ListOrder courierListOrder() throws RemoteException ;
     public boolean removeOrder (UUID uuid) throws RemoteException;
-    public void SCRIVI() throws RemoteException;
 }

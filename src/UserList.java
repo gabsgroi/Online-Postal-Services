@@ -11,9 +11,7 @@ public class UserList implements Serializable {
         }
         public synchronized boolean addOrder(Order o, String userid) {
         for (String key: usermap.keySet()) {
-            System.out.println("sono dentro il for di addOrder(order,string)");
             if (key.equals(userid)){
-                System.out.println("faccio il confronto con la chiave");
                 if(usermap.get(key).getListorder().addOrder(o)){
                     return true;
                 }
@@ -23,7 +21,7 @@ public class UserList implements Serializable {
     }
     public synchronized boolean removeOrder(UUID uuid){
         for (String key: usermap.keySet()) {
-            usermap.get(key).getListorder().removeOrder(uuid);
+            if(usermap.get(key).getListorder().removeOrder(uuid)) return true;
 
         }//sistemare return
         return false;

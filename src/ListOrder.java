@@ -31,12 +31,7 @@ public class ListOrder implements Serializable {
                 return orderlist.remove(o);
             }
         }
-return  false;
-    }
-    public void removeAllOrder() {
-        for(Order o: orderlist){
-            orderlist.remove(o);
-        }
+        return  false;
     }
 
 

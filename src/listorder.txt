@@ -1,3 +1,4 @@
-asd;75f75af9-170e-4b9c-8712-5e7f1d1b5ef6;1603228401028;In elaboration;alfio;via dddddd;gabriele;via gala;2;11.0;22.0;5.0;4.0;1.0;6.0;4.0;7.0;
 asd;b5838792-219e-4475-b61c-46cd3f4aa148;1603228621652;In elaboration;deianira;via priolo;gabriele;via gala;1;15.0;18.0;10.0;70.0;
-ok;f3311870-867b-4dee-925f-cf59bfc4285f;1603228687868;In elaboration;gio;via dei paesi;Angelo;via noto;3;11.0;22.0;33.0;44.0;1.0;4.0;78.0;4.0;65.0;22.0;1.0;0.0;
+asd;41ec80c3-b07e-459f-a72e-cf15824cd80f;1603490003396;In elaboration;kokokokokokokoko;okokokokokokokko;gabriele;via gala;2;4.0;5.0;8.0;4.0;1.0;4.0;5.0;7.0;
+asd;f28955b1-1e8c-49bd-baaa-1ebfe5395bed;1603490325573;In elaboration;kokdoaskdoas;osadokosakd;gabriele;via gala;1;1.0;2.0;3.0;4.0;
+asdone;0436c178-1aad-45a9-9829-cc73ddcea35a;1603487047470;In elaboration;turiiiiii;turiiiiii;alfiotu;alf;1;1.0;2.0;3.0;4.0;

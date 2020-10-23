@@ -4,10 +4,10 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-//togliere il metodo SCRIVI
-//guardare i return
 // i metodi di Services sono già sincronizzati?
 // devo modificare il menu',.
+// con l'eliminazione con numero , potrebbe esserci il problema di un'altro corriere che elimina prima di me quell'ordine ma io vedo la lista non
+// aggiornata e quindi elimino un altro ordine, potrei aggiungere un ulteriore controllo. Ho implementato il controllo ma non so se funzionerà
 public class Server extends UnicastRemoteObject implements Services {
 
     private UserList user_list; //=new UserList();
@@ -21,18 +21,8 @@ public class Server extends UnicastRemoteObject implements Services {
         }
     }
 
-
     private ListOrder util_list=new ListOrder();
-    /*{
-        try {
 
-            util_list = readFile();
-            user_list=readUser();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-*/
     private String staff_code="sgroi20";
 
     protected Server() throws RemoteException {}
@@ -49,37 +39,28 @@ public class Server extends UnicastRemoteObject implements Services {
 
     public ListOrder courierListOrder () throws RemoteException {
         this.listOrderCopy();
-        /*try {
-            writeFile(util_list);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         return this.util_list;
     }
 
     @Override
     public boolean removeOrder(UUID uuid) throws RemoteException {
         System.out.println("SERVER LOG: invoking removeOrder()");
-        user_list.removeOrder(uuid);
-        util_list.removeOrder(uuid);
 
+            if (user_list.removeOrder(uuid) && util_list.removeOrder(uuid)){
+                System.out.println("SERVER LOG: invoked removeOrder()");
 
+                try {
+                    writeUserlist(user_list);
+                    writeFile();
+                    System.out.println("SERVER LOG: Writting into Database");
 
-            System.out.println("SERVER LOG: invoked removeOrder()");
-//sistemare return
-        return true;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
+            return false;
         }
-
-    @Override
-    public void SCRIVI() throws RemoteException {
-        try {
-            writeFile();
-            writeUserlist(user_list);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @Override
     public Long getDate() throws RemoteException {
@@ -90,9 +71,9 @@ public class Server extends UnicastRemoteObject implements Services {
 
     @Override
     public boolean staffVerify(String staff_code) throws RemoteException{
-        if (this.staff_code.equals(staff_code)) return true;
-        else return false;
+        return this.staff_code.equals(staff_code);
     }
+
     public boolean addUser(User p) throws RemoteException {
         System.out.println("SERVER LOG: invoking addUser");
         for (String key : user_list.getMap().keySet()) {
@@ -103,14 +84,14 @@ public class Server extends UnicastRemoteObject implements Services {
             user_list.addUser(p);
         try {
             writeUserlist(user_list);
+            System.out.println("SERVER LOG: invoked addUser");
+            return true;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("SERVER LOG: invoked addUser");
-            return true;
+        return false;
     }
-
-
 
     @Override
     public boolean addListOrder(String user_id , ListOrder list_order) throws RemoteException {
@@ -124,10 +105,17 @@ public class Server extends UnicastRemoteObject implements Services {
                 for (Order e: tmp_server_listorder.getOrderlist()){
                     if (user_list.addOrder(e,user_id)){
                         System.out.println("SERVER LOG: invoked addListOrder");
-
-                        return true;
                     }
                 }
+                try {
+                    writeFile();
+                    writeUserlist(user_list);
+                    return true;
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
         return false;
@@ -151,9 +139,7 @@ public class Server extends UnicastRemoteObject implements Services {
             Services services = new Server();
             Naming.rebind("shippingserver",services);
 
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
+        } catch (RemoteException | MalformedURLException e) {
             e.printStackTrace();
         }
 

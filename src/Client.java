@@ -2,12 +2,12 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.UUID;
 
 public class Client {
+
     public static void main(String args[]) {
 
         // SISTEMAREEEEEE
@@ -21,9 +21,7 @@ public class Client {
             Services server = (Services) Naming.lookup("rmi://"+address+"/"+rmi_name);
 
             System.out.println( "Welcome to Sgroi's online shipping service");
-            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy HH mm");
             Date resultdate = new Date(server.getDate());
-            System.out.println('\n');
             System.out.println(resultdate);
             ListOrder tmp_listorder = new ListOrder();
             PackList tmp_packlist=new PackList();
@@ -52,11 +50,8 @@ public class Client {
                         else {
                             boolean menu=true;
                             while (menu){
-                                System.out.println('\n');
                                 System.out.println("--------------------------------");
-                                System.out.println('\n');
                                 System.out.println(" Hello "+tmp_user.getName());
-                                System.out.println('\n');
                                 System.out.println(" 0 - Insert new order");
                                 System.out.println(" 1 - Watch your active orders");
                                 System.out.println(" 2 -   ");
@@ -66,6 +61,7 @@ public class Client {
                                 user_input.nextLine(); //to elim..
                                 switch (choice2){
                                     case 0:
+                                        boolean isPack=true;
                                         System.out.println(" Insert the receiver's name");
                                         String name=user_input.nextLine();
                                         System.out.println(" Insert the receiver's address");
@@ -77,13 +73,25 @@ public class Client {
                                             System.out.println(" Insert the lenght, the width, the depth and the weight of your Pack "+(i+1)+": ");
                                             String pack_parameters= user_input.nextLine();
                                             Scanner pack_scanner= new Scanner(pack_parameters);
+
                                             float lenght = pack_scanner.nextFloat();
                                             float width = pack_scanner.nextFloat();
                                             float depth = pack_scanner.nextFloat();
                                             float weight = pack_scanner.nextFloat();
+
+                                            if (lenght==0.0f || width==0.0f || depth==0.0f || weight==0.0f){
+                                                System.out.println("Invalid parameters, please repeat the add of the order");
+                                                isPack=false;
+                                                break;
+                                            }
+
                                             Pack tmp_pack = new Pack(lenght,width,depth,weight);
                                             tmp_packlist.addPack(tmp_pack);
                                         }
+                                        if (!isPack){
+                                            break;
+                                        }
+
                                         Sender tmp_sender= new Sender(tmp_user.getName(),tmp_user.getAddress());
                                         Receiver tmp_receiver= new Receiver(name,address);
                                         Order tmp_order = new Order(server.getDate(),tmp_receiver,tmp_sender,tmp_packlist);
@@ -128,7 +136,19 @@ public class Client {
                             System.out.println(" Insert your Address");
                             String home_address=user_input.nextLine();
                             System.out.println(" Insert your Age");
-                            int age = user_input.nextInt(); //creare eccezione
+                            int age=0;
+                            boolean ageError = true;
+                            while (ageError) {
+                                if (user_input.hasNextInt())
+                                age = user_input.nextInt();
+                                else {
+                                    System.out.println("You have insert an invalid age, try again");
+                                    user_input.next();
+                                    continue;
+                                }
+                            ageError = false;
+                        }
+
                             if (age<18){
                                 System.out.println(" You must be over 18 years old!");
                                 break;
@@ -138,7 +158,7 @@ public class Client {
                             System.out.println(" Insert your Password");
                             String password2= user_input.next();
                             User tmp_user2= new User(name,age,password2,home_address,userId2);
-                            if(server.addUser(tmp_user2)==false){
+                            if(!server.addUser(tmp_user2)){
                                 System.out.println(" The User: "+tmp_user2.getUserid()+" already exist!");
                             }
                             else if(server.searchUser(tmp_user2.getUserid(),tmp_user2.getPassword()).compareTo(tmp_user2)==1){
@@ -165,13 +185,11 @@ public class Client {
                             boolean menu1=true;
                             int choice1;
                             while(menu1){
-                                System.out.println('\n');
                                 System.out.println("--------------------------------");
                                 System.out.println(" Hello "+tmp_user3.getName());
                                 System.out.println(" 0 - Watch client's orders");
                                 System.out.println(" 1 - Complete an order");
-                                System.out.println(" 2 -   ");
-                                System.out.println(" 3 - Log Out");
+                                System.out.println(" 2 - Log Out");
                                 System.out.println("--------------------------------");
                                 choice1= user_input.nextInt();
                                 user_input.nextLine();
@@ -179,32 +197,38 @@ public class Client {
                                     case 0:
                                         int i=1;
                                         for (Order o:server.courierListOrder().getOrderlist()){
-
                                             System.out.println(i+")"+o.toString());
                                             i++;
                                         }
-
                                         break;
 
                                     case 1:
 
                                         System.out.println("Insert the order's number that you want to deliver ");
-                                        //UUID tmp_uuid= UUID.fromString(user_input.nextLine());
-                                        int index=user_input.nextInt();
+                                        int index=0;
+
+                                        boolean indexError = true;
+                                        while (indexError) {
+                                            if (user_input.hasNextInt())
+                                                index = user_input.nextInt();
+                                            else {
+                                                System.out.println("You have insert an invalid order's number, try again");
+                                                user_input.next();
+                                                continue;
+                                            }
+                                            indexError = false;
+                                        }
                                         user_input.nextLine();
                                         UUID tmp_uuid=server.courierListOrder().getOrderlist().get(index-1).getOrder_id();
-                                        server.removeOrder(tmp_uuid);
+                                        if (tmp_uuid.equals(server.courierListOrder().getOrderlist().get(index-1).getOrder_id())) server.removeOrder(tmp_uuid);
                                         int j=1;
                                         for (Order o:server.courierListOrder().getOrderlist()){
-
                                             System.out.println(j+")"+o.toString());
                                             j++;
                                         }
                                         break;
-                                    case 2:
-                                        break;
 
-                                    case 3:
+                                    case 2:
                                         menu1=false;
                                         System.out.println("Goodbye "+tmp_user3.getName());
                                         break;
@@ -215,25 +239,15 @@ public class Client {
                             System.out.println("Wrong Staff code");
                             break;
                         }
-
-
-
                         break;
                     case 3:
                         go = false;
                         System.out.println("Quitting client");
                         break;
-                    case 4:
-                        server.SCRIVI();
-                        System.out.println("scrivi");
-                        break;
+
                 }
             }
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (RemoteException e) {
+        } catch (NotBoundException | MalformedURLException | RemoteException e) {
             e.printStackTrace();
         }
 
