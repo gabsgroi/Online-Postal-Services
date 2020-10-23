@@ -3,8 +3,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class ListOrder implements Serializable {
-        private ArrayList<Order> orderlist = new ArrayList<>();
-
+    private ArrayList<Order> orderlist = new ArrayList<>();
 
     public synchronized boolean addOrder(Order p) {
         int i = 0;
@@ -34,8 +33,7 @@ public class ListOrder implements Serializable {
         return  false;
     }
 
-
-        public ArrayList<Order> getOrderlist() {
+    public synchronized ArrayList<Order> getOrderlist() {
 
             ArrayList<Order> anotherlist = new ArrayList<>();
             for (Order p: orderlist) {
@@ -44,7 +42,7 @@ public class ListOrder implements Serializable {
             }
 
             return anotherlist;
-        }
+    }
 
     @Override
     public String toString() {

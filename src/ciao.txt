@@ -1,2 +1,0 @@
-b5f731d5-78ab-48db-be2b-c8f3068bb39e;1602896299355;In Elaboration;Gabriele Sgroi;via Galatioto 131;Angelo Gresti;via Cagnoni 11;2;12;22;3;4;5;6;7;8;
-b5f731d5-78ab-48db-be2b-c8f3d68bb39e;1602896299355;In Elaboration;Gabriele Sgroi;via Galatioto 131;Angelo Gresti;via Cagnoni 11;2;15;2;44;14;55;66;37;18;

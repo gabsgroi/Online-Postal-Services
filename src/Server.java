@@ -8,6 +8,10 @@ import java.util.*;
 // devo modificare il menu',.
 // con l'eliminazione con numero , potrebbe esserci il problema di un'altro corriere che elimina prima di me quell'ordine ma io vedo la lista non
 // aggiornata e quindi elimino un altro ordine, potrei aggiungere un ulteriore controllo. Ho implementato il controllo ma non so se funzionerà
+//prossimo step, prendere file da github o da remoto da qualche parte (magari raspberry pi)
+// mettere un break se si sbaglia nextFloat del pacco
+//potrei mettere un thread che mi fa il report degli attuali ordini
+//
 public class Server extends UnicastRemoteObject implements Services {
 
     private UserList user_list; //=new UserList();
@@ -145,7 +149,7 @@ public class Server extends UnicastRemoteObject implements Services {
 
     }
 
-    public synchronized void writeUserlist(UserList user_list) throws IOException {
+    private synchronized void writeUserlist(UserList user_list) throws IOException {
         FileWriter writer= new FileWriter("users.txt");
         PrintWriter pw= new PrintWriter(writer);
         for(String key : user_list.getMap().keySet()){
@@ -164,7 +168,8 @@ public class Server extends UnicastRemoteObject implements Services {
         }
         writer.close();
     }
-    public synchronized UserList readUser () throws IOException {
+
+    private synchronized UserList readUser () throws IOException {
 
         FileReader reader = new FileReader("users.txt");
         Scanner in = new Scanner(reader);
@@ -186,7 +191,8 @@ public class Server extends UnicastRemoteObject implements Services {
         reader.close();
         return tmp_userlist;
     }
-    public synchronized void readFile() throws IOException {
+
+    private synchronized void readFile() throws IOException {
 
         FileReader reader =new FileReader("listorder.txt");
         Scanner in=new Scanner(reader);
@@ -219,7 +225,8 @@ public class Server extends UnicastRemoteObject implements Services {
         }
         reader.close();
     }
-    public synchronized void writeFile() throws IOException {
+
+    private synchronized void writeFile() throws IOException {
         FileWriter writer= new FileWriter("listorder.txt");
         PrintWriter pw= new PrintWriter(writer);
         for (String key: user_list.getMap().keySet()){

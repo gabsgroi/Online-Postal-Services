@@ -9,27 +9,12 @@ public class Order implements Serializable, Comparable<Order> {
         return order_id;
     }
 
-    public void setOrder_id(UUID order_id) {
-        this.order_id = order_id;
-    }
-
     private UUID order_id;
     private Long startdate;
     private String status;
     private Receiver receiver;
     private Sender sender;
     private PackList packlist;
-
-
-    public Order(Long startdate,Receiver receiver, Sender sender) {
-
-        this.order_id=UUID.randomUUID();
-        this.startdate = startdate;
-        this.status = "In elaboration";
-        this.receiver = receiver;
-        this.sender = sender;
-
-    }
 
     public Order( Long startdate, Receiver receiver, Sender sender, PackList packlist) {
         this.order_id=UUID.randomUUID();;
@@ -91,10 +76,10 @@ public class Order implements Serializable, Comparable<Order> {
 
     @Override
     public String toString() {
+
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy HH mm");
         Date resultdate = new Date(startdate);
         return '\n'+"Order ID: "+order_id +'\n'+ "Stardate: "+resultdate  +"\n"+"Status: "+status+ "\n"+"Sender: "+sender+"\n"+"Receiver: "+receiver+"\n"+packlist;
-
     }
 
     @Override

@@ -8,7 +8,6 @@ import java.io.Serializable;
     private String password;
     private String address;
 
-
     public String getUserid() {
         return userid;
     }

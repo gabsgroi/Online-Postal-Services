@@ -5,8 +5,6 @@ public class User extends Person implements Comparable<User> {
         this.listorder= new ListOrder();
     }
 
-
-
     public User(String name, int age, String password, String address, String userid, ListOrder listorder) {
         super(name, age, password, address, userid);
         this.listorder = listorder;

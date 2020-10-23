@@ -9,33 +9,31 @@ public class PackList implements Serializable {
             packlist.add(p);
         }
 
-        public ArrayList<Pack> getPacklist() {
-            //return list;
+        public synchronized ArrayList<Pack> getPacklist() {
             ArrayList<Pack> anotherlist = new ArrayList<>();
             for (Pack p: packlist) {
                 Pack x = new Pack(p.getLenght(),p.getWidth(),p.getDepth(),p.getWeight());
                 anotherlist.add(x);
             }
-
             return anotherlist;
         }
-        public void removePack(Pack p) {
 
+        public synchronized void removePack(Pack p) {
         packlist.remove(p);
     }
-        public void removeAllPack() {
+
+        public synchronized void removeAllPack() {
         for(Pack p: packlist){
             packlist.remove(p);
         }
     }
+
         public String printList () {
             String str_packlist="\n";
             int i=1;
             for (Pack p: packlist){
-
                  str_packlist= str_packlist+("Pack "+i+": "+p.toString()+"\n") ;
                  i++;
-
             }
             return  str_packlist;
         }

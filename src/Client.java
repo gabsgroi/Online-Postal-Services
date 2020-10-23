@@ -10,8 +10,7 @@ public class Client {
 
     public static void main(String args[]) {
 
-        // SISTEMAREEEEEE
-        // SI POTEVA USARE CLONABLE
+
        /* String address = args[0];
         String rmi_name = args[1];*/
         String address = "127.0.0.1";
@@ -54,8 +53,7 @@ public class Client {
                                 System.out.println(" Hello "+tmp_user.getName());
                                 System.out.println(" 0 - Insert new order");
                                 System.out.println(" 1 - Watch your active orders");
-                                System.out.println(" 2 -   ");
-                                System.out.println(" 3 - Log Out");
+                                System.out.println(" 2 - Log Out ");
                                 System.out.println("--------------------------------");
                                 int choice2 = user_input.nextInt();
                                 user_input.nextLine(); //to elim..
@@ -69,6 +67,7 @@ public class Client {
                                         System.out.println(" How many pack do you want to deliver?");
                                         int packnumber=user_input.nextInt();
                                         user_input.nextLine(); //to elim..
+
                                         for (int i=0;i<packnumber; i++){
                                             System.out.println(" Insert the lenght, the width, the depth and the weight of your Pack "+(i+1)+": ");
                                             String pack_parameters= user_input.nextLine();
@@ -98,7 +97,6 @@ public class Client {
                                         tmp_listorder.addOrder(tmp_order);
                                         tmp_user.setListorder(tmp_listorder);
 
-
                                         if(server.addListOrder(tmp_user.getUserid(), tmp_user.getListorder())){
                                             System.out.println(" Order correctly added!");
                                         }
@@ -119,15 +117,12 @@ public class Client {
 
                                         break;
                                     case 2:
-
-                                    case 3:
                                         menu=false;
                                         System.out.println(" Goodbye "+tmp_user.getName());
                                         break;
                                 }
                             }
                         }
-
                         break;
                     case 1:
                             user_input.nextLine(); //to eliminate the new line character
@@ -167,14 +162,13 @@ public class Client {
                             else {
                                 System.err.println(" Uknown error");
                             }
-
                         break;
                     case 2:
                         System.out.println(" Insert UserId");
                         userId=user_input.next();
                         System.out.println(" Insert Password");
                         password=user_input.next();
-                        System.out.println(" Inser the Staff code");
+                        System.out.println(" Insert the Staff code");
                         String staff_code=user_input.next();
                         if (server.staffVerify(staff_code)){
                             User tmp_user3= server.searchUser(userId,password);
@@ -206,7 +200,6 @@ public class Client {
 
                                         System.out.println("Insert the order's number that you want to deliver ");
                                         int index=0;
-
                                         boolean indexError = true;
                                         while (indexError) {
                                             if (user_input.hasNextInt())
@@ -220,14 +213,12 @@ public class Client {
                                         }
                                         user_input.nextLine();
                                         UUID tmp_uuid=server.courierListOrder().getOrderlist().get(index-1).getOrder_id();
-                                        if (tmp_uuid.equals(server.courierListOrder().getOrderlist().get(index-1).getOrder_id())) server.removeOrder(tmp_uuid);
-                                        int j=1;
-                                        for (Order o:server.courierListOrder().getOrderlist()){
-                                            System.out.println(j+")"+o.toString());
-                                            j++;
+                                        if (tmp_uuid.equals(server.courierListOrder().getOrderlist().get(index-1).getOrder_id())){
+                                            if(server.removeOrder(tmp_uuid)){
+                                                System.out.println("Order: "+tmp_uuid+" delivered!");
+                                            }
                                         }
                                         break;
-
                                     case 2:
                                         menu1=false;
                                         System.out.println("Goodbye "+tmp_user3.getName());
