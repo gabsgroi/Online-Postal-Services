@@ -1,37 +1,37 @@
 import java.io.*;
 import java.net.MalformedURLException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-// i metodi di Services sono già sincronizzati?
-// devo modificare il menu',.
-// con l'eliminazione con numero , potrebbe esserci il problema di un'altro corriere che elimina prima di me quell'ordine ma io vedo la lista non
-// aggiornata e quindi elimino un altro ordine, potrei aggiungere un ulteriore controllo. Ho implementato il controllo ma non so se funzionerà
-//prossimo step, prendere file da github o da remoto da qualche parte (magari raspberry pi)
-// mettere un break se si sbaglia nextFloat del pacco
-//potrei mettere un thread che mi fa il report degli attuali ordini
-//
+
 public class Server extends UnicastRemoteObject implements Services {
 
     private UserList user_list; //=new UserList();
-
+    private ListOrder util_list=new ListOrder();
+    private CompletedList completed_list=new CompletedList();
     {
         try {
             user_list = readUser();
             readFile();
+            readCompletedOrder();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private ListOrder util_list=new ListOrder();
 
     private String staff_code="sgroi20";
 
-    protected Server() throws RemoteException {}
+    protected Server() throws RemoteException {
 
-    private void listOrderCopy(){
+        super(7500); //rmi remote 7500 1102 1103
+    }
+
+    private synchronized void listOrderCopy(){
         System.out.println("SERVER LOG: invoking listOrderCopy");
         for (String key : user_list.getMap().keySet()) {
             for (Order o: user_list.getMap().get(key).getListorder().getOrderlist()){
@@ -41,14 +41,18 @@ public class Server extends UnicastRemoteObject implements Services {
         System.out.println("SERVER LOG: invoked listOrderCopy");
     }
 
-    public ListOrder courierListOrder () throws RemoteException {
+    public synchronized ListOrder courierListOrder () throws RemoteException {
         this.listOrderCopy();
         return this.util_list;
     }
-
+    public synchronized CompletedList completedList() throws RemoteException {
+        return completed_list;
+    }
     @Override
-    public boolean removeOrder(UUID uuid) throws RemoteException {
+    public synchronized boolean removeOrder(UUID uuid) throws RemoteException {
         System.out.println("SERVER LOG: invoking removeOrder()");
+        CompletedOrder tmporder=user_list.getOrderUser(uuid);
+        completed_list.addOrder(tmporder.getUser_id(), tmporder.getOrder());
 
             if (user_list.removeOrder(uuid) && util_list.removeOrder(uuid)){
                 System.out.println("SERVER LOG: invoked removeOrder()");
@@ -56,6 +60,7 @@ public class Server extends UnicastRemoteObject implements Services {
                 try {
                     writeUserlist(user_list);
                     writeFile();
+                    writeCompletedOrder();
                     System.out.println("SERVER LOG: Writting into Database");
 
                 } catch (IOException e) {
@@ -78,7 +83,7 @@ public class Server extends UnicastRemoteObject implements Services {
         return this.staff_code.equals(staff_code);
     }
 
-    public boolean addUser(User p) throws RemoteException {
+    public synchronized boolean addUser(User p) throws RemoteException {
         System.out.println("SERVER LOG: invoking addUser");
         for (String key : user_list.getMap().keySet()) {
             if (key.equals(p.getUserid())) {
@@ -98,7 +103,7 @@ public class Server extends UnicastRemoteObject implements Services {
     }
 
     @Override
-    public boolean addListOrder(String user_id , ListOrder list_order) throws RemoteException {
+    public synchronized boolean addListOrder(String user_id , ListOrder list_order) throws RemoteException {
         System.out.println("SERVER LOG: invoking addListOrder");
         for (String key : user_list.getMap().keySet()) {
             if (key.equals(user_id)) {
@@ -140,10 +145,13 @@ public class Server extends UnicastRemoteObject implements Services {
     public static void main(String args[]) {
 
         try {
+            System.setProperty("java.rmi.server.hostname","whitelodge.ns0.it");//to search the rmi registry in the Server host
+            Registry registry = LocateRegistry.getRegistry();
             Services services = new Server();
-            Naming.rebind("shippingserver",services);
+            //Naming.rebind("shippingserver",services); it works in local statically
+            registry.bind("shippingserver",services);
 
-        } catch (RemoteException | MalformedURLException e) {
+        } catch (RemoteException | AlreadyBoundException e) {
             e.printStackTrace();
         }
 
@@ -266,4 +274,76 @@ public class Server extends UnicastRemoteObject implements Services {
 
     }
 
+    private synchronized void readCompletedOrder() throws IOException {
+
+        FileReader reader =new FileReader("completedorder.txt");
+        Scanner in=new Scanner(reader);
+        while(in.hasNext()){
+            String line=in.nextLine();
+            String [] vectorline=line.split(";");
+            String tmp_userid=vectorline[0];
+            String tmp_id=vectorline[1];
+            Long tmp_date=Long.parseLong(vectorline[2]);
+            String tmp_status=vectorline[3];
+            String tmp_receivername=vectorline[4];
+            String tmp_receiveraddress=vectorline[5];
+            String tmp_sendername=vectorline[6];
+            String tmp_senderaddress=vectorline[7];
+            int index =Integer.parseInt(vectorline[8]);
+            PackList tmp_packlist=new PackList();
+            ArrayList <Float> tmp_pack = new ArrayList<>();
+            for (int i=1;i<=index*4;i++) {
+                tmp_pack.add(Float.parseFloat(vectorline[8+i]));
+                if (i%4==0){
+                    Pack p=new Pack(tmp_pack.get(i-4),tmp_pack.get(i-3),tmp_pack.get(i-2),tmp_pack.get(i-1));
+                    tmp_packlist.addPack(p);
+                }
+            }
+            Receiver tmp_receiver=new Receiver(tmp_receivername,tmp_receiveraddress);
+            Sender tmp_sender=new Sender(tmp_sendername,tmp_senderaddress);
+            Order o = new Order(UUID.fromString(tmp_id),tmp_date,tmp_status,tmp_receiver,tmp_sender,tmp_packlist);
+            completed_list.addOrder(tmp_userid,o);
+
+        }
+        reader.close();
+    }
+
+    private synchronized void writeCompletedOrder() throws IOException {
+        FileWriter writer= new FileWriter("completedorder.txt");
+        PrintWriter pw= new PrintWriter(writer);
+        for (CompletedOrder co: completed_list.getOrderlist()){
+                pw.print(co.getUser_id());
+                pw.print(";");
+                pw.print(co.getOrder().getOrder_id());
+                pw.print(";");
+                pw.print(co.getOrder().getStartdate());
+                pw.print(";");
+                pw.print(co.getOrder().getStatus());
+                pw.print(";");
+                pw.print(co.getOrder().getReceiver().getName());
+                pw.print(";");
+                pw.print(co.getOrder().getReceiver().getAddress());
+                pw.print(";");
+                pw.print(co.getOrder().getSender().getName());
+                pw.print(";");
+                pw.print(co.getOrder().getSender().getAddress());
+                pw.print(";");
+                pw.print(co.getOrder().getPacklist().getPacklist().size());
+                pw.print(";");
+                for (Pack p : co.getOrder().getPacklist().getPacklist()){
+                    pw.print(p.getLenght());
+                    pw.print(";");
+                    pw.print(p.getWidth());
+                    pw.print(";");
+                    pw.print(p.getDepth());
+                    pw.print(";");
+                    pw.print(p.getWeight());
+                    pw.print(";");
+                }
+                pw.print('\n');
+                pw.flush();
+
+        }
+
+    }
 }

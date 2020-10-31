@@ -38,6 +38,18 @@ public class UserList implements Serializable {
             return anothermap;
         }
 
+    public synchronized CompletedOrder getOrderUser (UUID uuid){
+         CompletedOrder tmporder ;
+            for (String key: usermap.keySet()) {
+                Order tmp=usermap.get(key).getListorder().getOrder(uuid);
+                if (tmp!=null){
+                    tmporder=new CompletedOrder(key,tmp);
+                    return tmporder;
+                }
+            }
+            return null;
+     }
+
     @Override
     public String toString() {
         return "UserList{" +

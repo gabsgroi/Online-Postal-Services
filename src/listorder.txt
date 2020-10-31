@@ -1,4 +1,0 @@
-asd;b5838792-219e-4475-b61c-46cd3f4aa148;1603228621652;In elaboration;deianira;via priolo;gabriele;via gala;1;15.0;18.0;10.0;70.0;
-asd;41ec80c3-b07e-459f-a72e-cf15824cd80f;1603490003396;In elaboration;kokokokokokokoko;okokokokokokokko;gabriele;via gala;2;4.0;5.0;8.0;4.0;1.0;4.0;5.0;7.0;
-asdone;0436c178-1aad-45a9-9829-cc73ddcea35a;1603487047470;In elaboration;turiiiiii;turiiiiii;alfiotu;alf;1;1.0;2.0;3.0;4.0;
-qwe;7df5c657-df59-4d06-9e6b-868a8a9cf3f7;1603492104575;In elaboration;oaksodkos;daosdkokas;asdl;asdl;1;1.0;22.0;33.0;44.0;

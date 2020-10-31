@@ -11,7 +11,7 @@ public class Client {
     public static void main(String args[]) {
 
 
-       /* String address = args[0];
+        /*String address = args[0];
         String rmi_name = args[1];*/
         String address = "127.0.0.1";
         String rmi_name = "shippingserver";
@@ -53,7 +53,8 @@ public class Client {
                                 System.out.println(" Hello "+tmp_user.getName());
                                 System.out.println(" 0 - Insert new order");
                                 System.out.println(" 1 - Watch your active orders");
-                                System.out.println(" 2 - Log Out ");
+                                System.out.println(" 2 - Watch your delivered orders");
+                                System.out.println(" 3 - Log Out ");
                                 System.out.println("--------------------------------");
                                 int choice2 = user_input.nextInt();
                                 user_input.nextLine(); //to elim..
@@ -116,7 +117,18 @@ public class Client {
                                         }
 
                                         break;
+
                                     case 2:
+                                        CompletedList tmplist = server.completedList();
+                                        System.out.println("Your completed orders: ");
+                                        for (CompletedOrder co: tmplist.getOrderlist()){
+                                            if (co.getUser_id().equals(tmp_user.getUserid())){
+                                                System.out.println(co);
+                                            }
+                                        }
+
+                                        break;
+                                    case 3:
                                         menu=false;
                                         System.out.println(" Goodbye "+tmp_user.getName());
                                         break;
@@ -148,6 +160,7 @@ public class Client {
                                 System.out.println(" You must be over 18 years old!");
                                 break;
                             }
+                            
                             System.out.println(" Insert your UserId");
                             String userId2= user_input.next();
                             System.out.println(" Insert your Password");

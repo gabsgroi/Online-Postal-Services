@@ -30,9 +30,17 @@ public class ListOrder implements Serializable {
                 return orderlist.remove(o);
             }
         }
-        return  false;
+        return false;
     }
 
+    public synchronized Order getOrder(UUID uuid) {
+        for (Order o : orderlist) {
+            if (o.getOrder_id().equals(uuid)) {
+                return o;
+            }
+        }
+        return null;
+    }
     public synchronized ArrayList<Order> getOrderlist() {
 
             ArrayList<Order> anotherlist = new ArrayList<>();

@@ -17,7 +17,7 @@ public class Order implements Serializable, Comparable<Order> {
     private PackList packlist;
 
     public Order( Long startdate, Receiver receiver, Sender sender, PackList packlist) {
-        this.order_id=UUID.randomUUID();;
+        this.order_id=UUID.randomUUID();
         this.startdate = startdate;
         this.status = "In elaboration";
         this.receiver = receiver;

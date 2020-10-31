@@ -1,5 +1,6 @@
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.UUID;
 
 public interface Services extends Remote {
@@ -10,4 +11,5 @@ public interface Services extends Remote {
     public User searchUser(String userid,String  password) throws RemoteException;
     public ListOrder courierListOrder() throws RemoteException ;
     public boolean removeOrder (UUID uuid) throws RemoteException;
+    public CompletedList completedList() throws RemoteException;
 }
