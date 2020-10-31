@@ -28,7 +28,7 @@ public class Server extends UnicastRemoteObject implements Services {
 
     protected Server() throws RemoteException {
 
-        super(1102); //rmi remote 7500 1102 1103
+        super(1103); //rmi remote 7500 1102 1103
     }
 
     private synchronized void listOrderCopy(){
