@@ -11,10 +11,10 @@ public class Client {
     public static void main(String args[]) {
 
 
-        /*String address = args[0];
-        String rmi_name = args[1];*/
-        String address = "127.0.0.1";
-        String rmi_name = "shippingserver";
+        String address = args[0];
+        String rmi_name = args[1];
+      /*  String address = "127.0.0.1";
+        String rmi_name = "shippingserver";*/
 
         try {
             Services server = (Services) Naming.lookup("rmi://"+address+"/"+rmi_name);
