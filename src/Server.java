@@ -15,9 +15,11 @@ public class Server extends UnicastRemoteObject implements Services {
     private CompletedList completed_list=new CompletedList();
     {
         try {
+            System.out.println("Reading data from database...");
             user_list = readUser();
             readFile();
             readCompletedOrder();
+            System.out.println("Data from database correctly read");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,7 +40,7 @@ public class Server extends UnicastRemoteObject implements Services {
                 util_list.addOrder(o);
             }
         }
-        System.out.println("SERVER LOG: invoked listOrderCopy");
+        System.out.println("SERVER LOG: finish listOrderCopy");
     }
 
     public synchronized ListOrder courierListOrder () throws RemoteException {
@@ -55,13 +57,13 @@ public class Server extends UnicastRemoteObject implements Services {
         completed_list.addOrder(tmporder.getUser_id(), tmporder.getOrder());
 
             if (user_list.removeOrder(uuid) && util_list.removeOrder(uuid)){
-                System.out.println("SERVER LOG: invoked removeOrder()");
+                System.out.println("SERVER LOG: finish removeOrder()");
 
                 try {
                     writeUserlist(user_list);
                     writeFile();
                     writeCompletedOrder();
-                    System.out.println("SERVER LOG: Writting into Database");
+                    System.out.println("SERVER LOG: Writing into Database");
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -73,13 +75,14 @@ public class Server extends UnicastRemoteObject implements Services {
 
     @Override
     public Long getDate() throws RemoteException {
-        System.out.println("SERVER LOG: invoking getDate()");
+        System.out.println("SERVER LOG: invoking getDate");
         Long date=System.currentTimeMillis();
         return date;
     }
 
     @Override
     public boolean staffVerify(String staff_code) throws RemoteException{
+        System.out.println("SERVER LOG: invoking staffVerify");
         return this.staff_code.equals(staff_code);
     }
 
@@ -93,7 +96,7 @@ public class Server extends UnicastRemoteObject implements Services {
             user_list.addUser(p);
         try {
             writeUserlist(user_list);
-            System.out.println("SERVER LOG: invoked addUser");
+            System.out.println("SERVER LOG: user "+p.getUserid()+" added");
             return true;
 
         } catch (IOException e) {
@@ -136,7 +139,7 @@ public class Server extends UnicastRemoteObject implements Services {
         for (String key:user_list.getMap().keySet()){
             if(key.equals(userid) && user_list.getMap().get(key).getPassword().equals(password)){
                 User user_copy = user_list.getMap().get(key);
-                System.out.println("SERVER LOG: invoked searchUser");
+                System.out.println("SERVER LOG: Login user "+userid);
                 return user_copy;
             }
         }return null;

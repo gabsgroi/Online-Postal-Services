@@ -14,12 +14,12 @@ public class Client {
         String address = args[0];
         String rmi_name = args[1];
       /*  String address = "127.0.0.1";
-        String rmi_name = "shippingserver";*/
+        String rmi_name = "shippingserver";  it works locally*/
 
         try {
             Services server = (Services) Naming.lookup("rmi://"+address+"/"+rmi_name);
 
-            System.out.println( "Welcome to Sgroi's online shipping service");
+            System.out.println( "Welcome to the online shipping service");
             Date resultdate = new Date(server.getDate());
             System.out.println(resultdate);
             ListOrder tmp_listorder = new ListOrder();
