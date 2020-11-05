@@ -1,6 +1,7 @@
 import java.io.Serializable;
+import java.util.Objects;
 
- public class  Person implements Serializable {
+public class  Person implements Serializable {
 
     private String userid;
     private String name;
@@ -62,4 +63,16 @@ import java.io.Serializable;
     }
 
 
- }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(getUserid(), person.getUserid());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserid());
+    }
+}

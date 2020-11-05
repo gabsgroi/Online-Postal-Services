@@ -1,10 +1,12 @@
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserList implements Serializable {
 
-     private HashMap<String,User> usermap = new HashMap<>();
+
+    private HashMap<String,User> usermap = new HashMap<>();
 
      public synchronized void addUser(User p) {
             usermap.put(p.getUserid(),p);
